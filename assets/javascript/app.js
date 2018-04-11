@@ -1,5 +1,4 @@
-// window.open('mailto:josephwilliamgj11@gmail.com');
-
+// connection to Firebase DB
 var config = {
   apiKey: "AIzaSyAYcEFQz7-dPSlnRzDkHOmkyoh53zWwab4",
   authDomain: "dinotech-42ff0.firebaseapp.com",
@@ -11,9 +10,6 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
-
-// var zipcodes = [80210, 80203, 80218, 80205, 87114, 77090];
-// var testZip = 77090;
 var queryURL =
   "https://api.zip-codes.com/ZipCodesAPI.svc/1.0/CalculateDistance/ByZip?fromzipcode=80203&tozipcode=80210&key=DEMOAPIKEY";
 var userzip = "";
@@ -24,33 +20,7 @@ var userInput = 0;
 var campaignName = "";
 var customers = [];
 
-// var customers = [
-//   {
-//     fname: "Joe",
-//     lname: "Arnold",
-//     email: "josephwilliamgj11@gmail.com",
-//     zip: 77090
-//   }
-// {
-//   fname: "Ken",
-//   lname: "Lee",
-//   email: "wewert@gmail.com",
-//   zip: 80210
-// },
-// {
-//   fname: "Amy",
-//   lname: "Christine",
-//   email: "amychristine29@gmail.com",
-//   zip: 80203
-// },
-// {
-//   fname: "Saijai",
-//   lname: "Osika",
-//   email: "hewjang@gmail.com",
-//   zip: 80218
-// }
-// ];
-
+// Takes in a zip code and distance
 function determineDistance() {
   var updatedCustomers = [];
   var count = 0;
@@ -76,9 +46,9 @@ function determineDistance() {
         zip +
         "&key=1KD8MCQCP3U9ID1R4ETZ",
       method: "GET"
+      // grabs customers according to zip code and distance
     }).done(function(response) {
       var results = response.DistanceInMiles;
-      // console.log("our distance", results);
       if (results <= maxDistance) {
         customer.distance = results;
 
@@ -86,8 +56,9 @@ function determineDistance() {
 
         var name = "Joseph";
         var email = customer.email;
-        var customer_name = customer.fname; // Need to define
+        var customer_name = customer.fname; 
 
+        // emails customers through Emailjs.com
         emailjs.init("user_vRXnWslIHFZMq1MSBb3XD");
         $("#emailButton").on("click", function(event) {
           event.preventDefault();
@@ -123,12 +94,6 @@ function determineDistance() {
       }
     });
   });
-  // .then(function(data) {
-  // next line is pseudo code
-  // if (count === database.children("/customers")) {
-  // do our stuff with the updatedCustomers array
-  // }
-  // you have potential full array here.
 }
 $(document).on("click", "#new-campaign-button", function(event) {
   event.preventDefault();
@@ -165,65 +130,3 @@ var quill = new Quill("#editor-container", {
   placeholder: "Compose an email here...",
   theme: "snow" // or 'bubble'
 });
-
-//-------------------------------------------------
-//login
-//-------------------------------------------------
-$(".form")
-  .find("input, textarea")
-  .on("keyup blur focus", function(e) {
-    var $this = $(this),
-      label = $this.prev("label");
-
-    if (e.type === "keyup") {
-      if ($this.val() === "") {
-        label.removeClass("active highlight");
-      } else {
-        label.addClass("active highlight");
-      }
-    } else if (e.type === "blur") {
-      if ($this.val() === "") {
-        label.removeClass("active highlight");
-      } else {
-        label.removeClass("highlight");
-      }
-    } else if (e.type === "focus") {
-      if ($this.val() === "") {
-        label.removeClass("highlight");
-      } else if ($this.val() !== "") {
-        label.addClass("highlight");
-      }
-    }
-  });
-
-$(".tab a").on("click", function(e) {
-  e.preventDefault();
-
-  $(this)
-    .parent()
-    .addClass("active");
-  $(this)
-    .parent()
-    .siblings()
-    .removeClass("active");
-
-  target = $(this).attr("href");
-
-  $(".tab-content > div")
-    .not(target)
-    .hide();
-
-  $(target).fadeIn(600);
-});
-
-function toggle() {
-  if (document.getElementById("hidethis").style.display == "none") {
-    document.getElementById("hidethis").style.display = "table-row"; // set to table-row instead of an empty string
-  } else {
-    document.getElementById("hidethis").style.display = "none";
-  }
-}
-
-function checkZip(value) {
-  return /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(value);
-}
